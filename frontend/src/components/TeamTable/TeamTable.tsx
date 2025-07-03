@@ -33,9 +33,9 @@ const TeamTable = () => {
 
     return (
         <div className="members-container">
-            <h1 className="members-heading">
-                NUM people in the Redocly organization
-            </h1>
+            <h5 className="members-heading">
+                {members.length} people in the Redocly organization
+            </h5>
             <table className="members-table">
                 <thead>
                     <th>Name</th>

@@ -9,7 +9,9 @@ router.get("/", async (req: Request, res: Response) => {
         const members = await prisma.user.findMany({
             where: {
                 memberships: {
-                    some: {},
+                    some: {
+                        role: "MEMBER",
+                    },
                 },
             },
             include: {
