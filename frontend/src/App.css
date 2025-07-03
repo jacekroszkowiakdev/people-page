@@ -1,0 +1,19 @@
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: #f8f9fa;
+    color: #212529;
+}
+
+.App {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+}
