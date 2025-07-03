@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
+    const search = req.query.search as string;
+
     try {
         const members = await prisma.user.findMany({
             where: {
@@ -13,6 +15,20 @@ router.get("/", async (req: Request, res: Response) => {
                         role: "MEMBER",
                     },
                 },
+                ...(search && {
+                    OR: [
+                        {
+                            name: {
+                                contains: search,
+                            },
+                        },
+                        {
+                            email: {
+                                contains: search,
+                            },
+                        },
+                    ],
+                }),
             },
             include: {
                 memberships: {
