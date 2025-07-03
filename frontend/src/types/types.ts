@@ -28,3 +28,5 @@ export interface Member {
 export interface MembersResponse {
     members: Member[];
 }
+
+export type SortField = "role" | "guest" | "lastLogin" | "team";

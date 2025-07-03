@@ -5,12 +5,16 @@ import type { Member } from "../../types/types";
 import type { MembersResponse } from "../../types/types";
 
 import SearchInput from "../SearchInput/SearchInput";
+import SortControls from "../SortControls/SortControls";
 
 const TeamTable = () => {
     const [members, setMembers] = useState<Member[]>([]);
     const [isLoading, setLoading] = useState(true);
     const [filter, setFilter] = useState("");
     const [error, setError] = useState<string | null>(null);
+    const [sortField, setSortField] = useState<
+        "role" | "guest" | "lastLogin" | "team" | null
+    >(null);
 
     const fetchMembers = useCallback(async (filterInput: string) => {
         try {
@@ -51,11 +55,48 @@ const TeamTable = () => {
     const formatDate = (date: string | null) =>
         date ? new Date(date).toLocaleDateString() : "Never";
 
+    const sortedMembers = [...members];
+
+    if (sortField) {
+        sortedMembers.sort((a, b) => {
+            switch (sortField) {
+                case "role":
+                    return (a.memberships[0]?.role || "").localeCompare(
+                        b.memberships[0]?.role || ""
+                    );
+                case "guest": {
+                    const isGuestA = a.memberships[0]?.role === "guest" ? 1 : 0;
+                    const isGuestB = b.memberships[0]?.role === "guest" ? 1 : 0;
+                    return isGuestA - isGuestB;
+                }
+                case "lastLogin": {
+                    const timeA = a.lastLoginAt
+                        ? new Date(a.lastLoginAt).getTime()
+                        : 0;
+                    const timeB = b.lastLoginAt
+                        ? new Date(b.lastLoginAt).getTime()
+                        : 0;
+                    return timeA - timeB;
+                }
+                case "team": {
+                    const teamA = a.teamLinks[0]?.team.name || "";
+                    const teamB = b.teamLinks[0]?.team.name || "";
+                    return teamA.localeCompare(teamB);
+                }
+                default:
+                    return 0;
+            }
+        });
+    }
+
     if (isLoading) return <p className="members-container">Loading...</p>;
     if (error) return <p className="members-container">Error: {error}</p>;
 
     return (
         <div className="members-container">
+            <div className="sort-container">
+                <SortControls current={sortField} onSort={setSortField} />
+            </div>
             <h5 className="members-heading">
                 {members.length} people in the Redocly organization
             </h5>
@@ -76,7 +117,7 @@ const TeamTable = () => {
                     <th>Actions </th>
                 </thead>
                 <tbody>
-                    {members.map((member) => {
+                    {sortedMembers.map((member) => {
                         const m = member.memberships[0];
 
                         return (
