@@ -6,13 +6,14 @@ interface FilterProps {
     placeholder?: string;
 }
 
-const FilterInput: React.FC<FilterProps> = ({
+const SearchInput: React.FC<FilterProps> = ({
     value,
     onChange,
     placeholder,
 }) => {
     return (
-        <div className="search-input">
+        <div className="filter-input">
+            <button className="filter-button">Filters</button>
             <input
                 type="search"
                 value={value}
@@ -23,4 +24,4 @@ const FilterInput: React.FC<FilterProps> = ({
     );
 };
 
-export default FilterInput;
+export default SearchInput;

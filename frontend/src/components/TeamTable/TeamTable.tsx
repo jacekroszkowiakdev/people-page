@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import type { Member } from "../../types/types";
 import type { MembersResponse } from "../../types/types";
 
-import FilterInput from "../SearchInput/SearchInput";
+import SearchInput from "../SearchInput/SearchInput";
 
 const TeamTable = () => {
     const [members, setMembers] = useState<Member[]>([]);
@@ -20,6 +20,7 @@ const TeamTable = () => {
             const params = filterInput.trim()
                 ? { search: filterInput.trim() }
                 : {};
+
             const response = await axios.get<MembersResponse>("/api/members", {
                 params,
             });
@@ -27,7 +28,7 @@ const TeamTable = () => {
             console.log("API members response:", response.data);
             setMembers(response.data.members);
         } catch (error: unknown) {
-            console.error(" Error fetching members:", error);
+            console.error("Error fetching members:", error);
             if (axios.isAxiosError(error)) {
                 setError(error.response?.data?.error || error.message);
             } else if (error instanceof Error) {
@@ -37,10 +38,8 @@ const TeamTable = () => {
             }
         } finally {
             setLoading(false);
-        }, [])
-
-
-
+        }
+    }, []);
 
     useEffect(() => {
         fetchMembers("");
@@ -71,7 +70,7 @@ const TeamTable = () => {
             <h5 className="members-heading">
                 {members.length} people in the Redocly organization
             </h5>
-            <FilterInput
+            <SearchInput
                 value={filter}
                 onChange={setFilter}
                 placeholder="Filter by name or email"
