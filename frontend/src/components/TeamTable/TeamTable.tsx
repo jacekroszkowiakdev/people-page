@@ -25,7 +25,6 @@ const TeamTable = () => {
                 params,
             });
 
-            console.log("API members response:", response.data);
             setMembers(response.data.members);
         } catch (error: unknown) {
             console.error("Error fetching members:", error);
@@ -41,23 +40,13 @@ const TeamTable = () => {
         }
     }, []);
 
+    const handleFilter = () => {
+        fetchMembers(filter);
+    };
+
     useEffect(() => {
         fetchMembers("");
     }, []);
-
-    // filter with delay to avoid too many API calls
-    useEffect(() => {
-        if (filter === "") {
-            fetchMembers("");
-            return;
-        }
-
-        const timeout = setTimeout(() => {
-            fetchMembers(filter);
-        });
-
-        return () => clearTimeout(timeout);
-    }, [filter, fetchMembers]);
 
     const formatDate = (date: string | null) =>
         date ? new Date(date).toLocaleDateString() : "Never";
@@ -70,11 +59,14 @@ const TeamTable = () => {
             <h5 className="members-heading">
                 {members.length} people in the Redocly organization
             </h5>
-            <SearchInput
-                value={filter}
-                onChange={setFilter}
-                placeholder="Filter by name or email"
-            />
+            <div className="filter-controls">
+                <SearchInput
+                    value={filter}
+                    onChange={setFilter}
+                    onFilterClick={handleFilter}
+                    placeholder="Filter by name or email"
+                />
+            </div>
             <table className="members-table">
                 <thead>
                     <th>Name</th>
@@ -111,20 +103,7 @@ const TeamTable = () => {
                                             ))
                                     )}
                                 </td>
-                                <td>
-                                    <button
-                                        className="action-btn"
-                                        onClick={() =>
-                                            alert(
-                                                `View ${
-                                                    member.name || member.email
-                                                }`
-                                            )
-                                        }
-                                    >
-                                        View
-                                    </button>
-                                </td>
+                                <td></td>
                             </tr>
                         );
                     })}
